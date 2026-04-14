@@ -1,0 +1,30 @@
+/* Tema claro (default) */
+:root {
+  --bg: #f3f4f6;
+  --text: #1f2937;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --sidebar-bg: #1f1f2e;
+  --sidebar-text: #c7c7d9;
+  --sidebar-active: #ffffff;
+}
+
+/* Tema escuro */
+[data-theme="dark"] {
+  --bg: #1f1f2e;
+  --text: #e5e7eb;
+  --card: #2a2a3d;
+  --border: #3a3a4d;
+  --primary: #3b82f6;
+  --sidebar-bg: #14141f;
+  --sidebar-text: #9ca3af;
+  --sidebar-active: #ffffff;
+}
+
+/* Aplicação global */
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.25s ease, color 0.25s ease;
+}

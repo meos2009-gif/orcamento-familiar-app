@@ -13,8 +13,7 @@ import {
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
-  const [entradas, setEntradas] = useState([]);
-  const [saidas, setSaidas] = useState([]);
+  const [transacoes, setTransacoes] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
   const hoje = new Date();
@@ -26,36 +25,34 @@ export default function Dashboard() {
   }, []);
 
   async function carregarDados() {
-    const { data: ent } = await supabase
-      .from("entradas")
+    // Buscar transações do mês atual
+    const { data: trans } = await supabase
+      .from("transacoes")
       .select("*")
-      .eq("mes", mesAtual)
-      .eq("ano", anoAtual);
-
-    const { data: sai } = await supabase
-      .from("saidas")
-      .select("*")
-      .eq("mes", mesAtual)
-      .eq("ano", anoAtual);
+      .gte("data", `${anoAtual}-${mesAtual}-01`)
+      .lte("data", `${anoAtual}-${mesAtual}-31`);
 
     const { data: cat } = await supabase.from("categorias").select("*");
 
-    setEntradas(ent || []);
-    setSaidas(sai || []);
+    setTransacoes(trans || []);
     setCategorias(cat || []);
   }
 
-  // Cálculos
+  // Separar entradas e saídas
+  const entradas = transacoes.filter((t) => t.tipo === "entrada");
+  const saidas = transacoes.filter((t) => t.tipo === "saida");
+
+  // Totais
   const totalEntradas = entradas.reduce((acc, e) => acc + e.valor, 0);
   const totalSaidas = saidas.reduce((acc, s) => acc + s.valor, 0);
   const saldoMes = totalEntradas - totalSaidas;
 
   // Acumulado anual
-  const acumuladoAno = entradas
-    .filter((e) => e.ano === anoAtual)
-    .reduce((acc, e) => acc + e.valor, 0);
+  const acumuladoAno = transacoes
+    .filter((t) => t.tipo === "entrada")
+    .reduce((acc, t) => acc + t.valor, 0);
 
-  // Totais por categoria
+  // Totais por categoria (somente saídas)
   const categoriasTotais = categorias.map((cat) => {
     const total = saidas
       .filter((s) => s.categoria_id === cat.id)

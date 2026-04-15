@@ -41,13 +41,7 @@ export default function Dashboard() {
   }
 
   // Separar entradas e saídas
-  const entradas = transactions.filter((t) => t.type === "entrada");
   const saidas = transactions.filter((t) => t.type === "saida");
-
-  // Totais
-  const totalEntradas = entradas.reduce((acc, e) => acc + Number(e.amount), 0);
-  const totalSaidas = saidas.reduce((acc, s) => acc + Number(s.amount), 0);
-  const saldoMes = totalEntradas - totalSaidas;
 
   // Totais por categoria (mês)
   const categoriasMensal = categorias.map((cat) => {
@@ -58,7 +52,7 @@ export default function Dashboard() {
     return { nome: cat.name || "Sem Nome", total };
   });
 
-  // Totais acumulados por categoria (ano inteiro)
+  // Totais acumulados por categoria (ano)
   const categoriasAcumulado = categorias.map((cat) => {
     const total = transactions
       .filter(
@@ -107,62 +101,36 @@ export default function Dashboard() {
         </select>
       </div>
 
-      {/* CARDS */}
-      <div className="cards">
-        <div className="card">
-          <h4>Entradas (mês)</h4>
-          <p>{totalEntradas.toFixed(2)} €</p>
-        </div>
-
-        <div className="card">
-          <h4>Saídas (mês)</h4>
-          <p>{totalSaidas.toFixed(2)} €</p>
-        </div>
-
-        <div className="card">
-          <h4>Saldo</h4>
-          <p>{saldoMes.toFixed(2)} €</p>
-        </div>
-      </div>
-
-      {/* QUADRO MENSAL */}
+      {/* QUADRO ESTILO EXCEL */}
       <div className="tabela-categorias">
-        <h3>Despesas por Categoria (Mês)</h3>
-        <table>
+        <h3>Despesas por Categoria (Estilo Excel)</h3>
+
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr>
-              <th>Categoria</th>
-              <th>Total (€)</th>
+            <tr style={{ background: "#222" }}>
+              <th style={{ padding: "10px", border: "1px solid #444" }}>Categoria</th>
+              <th style={{ padding: "10px", border: "1px solid #444" }}>Total Mês (€)</th>
+              <th style={{ padding: "10px", border: "1px solid #444" }}>Acumulado Ano (€)</th>
             </tr>
           </thead>
-          <tbody>
-            {categoriasMensal.map((c) => (
-              <tr key={c.nome}>
-                <td>{c.nome}</td>
-                <td>{c.total.toFixed(2)} €</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      {/* QUADRO ACUMULADO */}
-      <div className="tabela-categorias">
-        <h3>Despesas por Categoria (Acumulado Ano)</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Categoria</th>
-              <th>Total (€)</th>
-            </tr>
-          </thead>
           <tbody>
-            {categoriasAcumulado.map((c) => (
-              <tr key={c.nome}>
-                <td>{c.nome}</td>
-                <td>{c.total.toFixed(2)} €</td>
-              </tr>
-            ))}
+            {categorias.map((cat) => {
+              const mensal = categoriasMensal.find((c) => c.nome === cat.name)?.total || 0;
+              const acumulado = categoriasAcumulado.find((c) => c.nome === cat.name)?.total || 0;
+
+              return (
+                <tr key={cat.id}>
+                  <td style={{ padding: "10px", border: "1px solid #444" }}>{cat.name}</td>
+                  <td style={{ padding: "10px", border: "1px solid #444" }}>
+                    {mensal.toFixed(2)} €
+                  </td>
+                  <td style={{ padding: "10px", border: "1px solid #444" }}>
+                    {acumulado.toFixed(2)} €
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

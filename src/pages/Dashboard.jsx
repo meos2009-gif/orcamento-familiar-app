@@ -13,7 +13,7 @@ import {
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
-  const [transacoes, setTransacoes] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
   const hoje = new Date();
@@ -25,38 +25,41 @@ export default function Dashboard() {
   }, []);
 
   async function carregarDados() {
-    // Buscar transações do mês atual
+    const mes = String(mesAtual).padStart(2, "0");
+    const proximoMes = String(mesAtual + 1).padStart(2, "0");
+
+    // Buscar transações do mês atual (sem erros de timezone)
     const { data: trans } = await supabase
-      .from("transacoes")
+      .from("transactions")
       .select("*")
-      .gte("data", `${anoAtual}-${mesAtual}-01`)
-      .lte("data", `${anoAtual}-${mesAtual}-31`);
+      .filter("date", "gte", `${anoAtual}-${mes}-01`)
+      .filter("date", "lt", `${anoAtual}-${proximoMes}-01`);
 
-    const { data: cat } = await supabase.from("categorias").select("*");
+    const { data: cat } = await supabase.from("categories").select("*");
 
-    setTransacoes(trans || []);
+    setTransactions(trans || []);
     setCategorias(cat || []);
   }
 
   // Separar entradas e saídas
-  const entradas = transacoes.filter((t) => t.tipo === "entrada");
-  const saidas = transacoes.filter((t) => t.tipo === "saida");
+  const entradas = transactions.filter((t) => t.type === "entrada");
+  const saidas = transactions.filter((t) => t.type === "saida");
 
   // Totais
-  const totalEntradas = entradas.reduce((acc, e) => acc + e.valor, 0);
-  const totalSaidas = saidas.reduce((acc, s) => acc + s.valor, 0);
+  const totalEntradas = entradas.reduce((acc, e) => acc + Number(e.amount), 0);
+  const totalSaidas = saidas.reduce((acc, s) => acc + Number(s.amount), 0);
   const saldoMes = totalEntradas - totalSaidas;
 
-  // Acumulado anual
-  const acumuladoAno = transacoes
-    .filter((t) => t.tipo === "entrada")
-    .reduce((acc, t) => acc + t.valor, 0);
+  // Acumulado anual (somente entradas)
+  const acumuladoAno = transactions
+    .filter((t) => t.type === "entrada")
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
   // Totais por categoria (somente saídas)
   const categoriasTotais = categorias.map((cat) => {
     const total = saidas
-      .filter((s) => s.categoria_id === cat.id)
-      .reduce((acc, s) => acc + s.valor, 0);
+      .filter((s) => s.category_id === cat.id)
+      .reduce((acc, s) => acc + Number(s.amount), 0);
 
     return { nome: cat.nome, total };
   });

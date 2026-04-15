@@ -1,39 +1,48 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
+  LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  BarElement,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+);
 
 export default function Dashboard() {
+  const hoje = new Date();
+  const [mes, setMes] = useState(hoje.getMonth() + 1);
+  const [ano, setAno] = useState(hoje.getFullYear());
+
   const [transactions, setTransactions] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
-  const hoje = new Date();
-  const mesAtual = hoje.getMonth() + 1;
-  const anoAtual = hoje.getFullYear();
-
   useEffect(() => {
     carregarDados();
-  }, []);
+  }, [mes, ano]);
 
   async function carregarDados() {
-    const mes = String(mesAtual).padStart(2, "0");
-    const proximoMes = String(mesAtual + 1).padStart(2, "0");
+    const mesStr = String(mes).padStart(2, "0");
+    const proximoMes = String(mes + 1).padStart(2, "0");
 
-    // Buscar transações do mês atual (sem erros de timezone)
     const { data: trans } = await supabase
       .from("transactions")
       .select("*")
-      .filter("date", "gte", `${anoAtual}-${mes}-01`)
-      .filter("date", "lt", `${anoAtual}-${proximoMes}-01`);
+      .filter("date", "gte", `${ano}-${mesStr}-01`)
+      .filter("date", "lt", `${ano}-${proximoMes}-01`);
 
     const { data: cat } = await supabase.from("categories").select("*");
 
@@ -50,12 +59,7 @@ export default function Dashboard() {
   const totalSaidas = saidas.reduce((acc, s) => acc + Number(s.amount), 0);
   const saldoMes = totalEntradas - totalSaidas;
 
-  // Acumulado anual (somente entradas)
-  const acumuladoAno = transactions
-    .filter((t) => t.type === "entrada")
-    .reduce((acc, t) => acc + Number(t.amount), 0);
-
-  // Totais por categoria (somente saídas)
+  // Totais por categoria
   const categoriasTotais = categorias.map((cat) => {
     const total = saidas
       .filter((s) => s.category_id === cat.id)
@@ -64,8 +68,8 @@ export default function Dashboard() {
     return { nome: cat.nome, total };
   });
 
-  // Gráfico
-  const chartData = {
+  // Gráfico por categoria
+  const chartCategorias = {
     labels: categoriasTotais.map((c) => c.nome),
     datasets: [
       {
@@ -76,9 +80,56 @@ export default function Dashboard() {
     ],
   };
 
+  // Gráfico de evolução mensal (linha)
+  const mesesLabels = [
+    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+  ];
+
+  const gastosPorMes = Array(12).fill(0);
+
+  transactions.forEach((t) => {
+    const m = new Date(t.date).getMonth();
+    if (t.type === "saida") {
+      gastosPorMes[m] += Number(t.amount);
+    }
+  });
+
+  const chartEvolucao = {
+    labels: mesesLabels,
+    datasets: [
+      {
+        label: "Gastos Mensais",
+        data: gastosPorMes,
+        borderColor: "#ff4e4e",
+        backgroundColor: "rgba(255, 78, 78, 0.3)",
+        tension: 0.3,
+      },
+    ],
+  };
+
   return (
     <div className="dashboard">
       <h2>Dashboard</h2>
+
+      {/* FILTROS */}
+      <div className="filtros">
+        <select value={mes} onChange={(e) => setMes(Number(e.target.value))}>
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+            <option key={m} value={m}>
+              {m.toString().padStart(2, "0")}
+            </option>
+          ))}
+        </select>
+
+        <select value={ano} onChange={(e) => setAno(Number(e.target.value))}>
+          {[2024, 2025, 2026, 2027].map((a) => (
+            <option key={a} value={a}>
+              {a}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* CARDS */}
       <div className="cards">
@@ -96,37 +147,18 @@ export default function Dashboard() {
           <h4>Saldo</h4>
           <p>{saldoMes.toFixed(2)} €</p>
         </div>
-
-        <div className="card">
-          <h4>Acumulado Ano</h4>
-          <p>{acumuladoAno.toFixed(2)} €</p>
-        </div>
       </div>
 
-      {/* GRÁFICO */}
+      {/* GRÁFICO DE EVOLUÇÃO */}
       <div className="grafico">
-        <Bar data={chartData} />
+        <h3>Evolução Mensal</h3>
+        <Line data={chartEvolucao} />
       </div>
 
-      {/* TABELA POR CATEGORIA */}
-      <div className="tabela-categorias">
+      {/* GRÁFICO POR CATEGORIA */}
+      <div className="grafico">
         <h3>Gastos por Categoria</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Categoria</th>
-              <th>Total (€)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categoriasTotais.map((c) => (
-              <tr key={c.nome}>
-                <td>{c.nome}</td>
-                <td>{c.total.toFixed(2)} €</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Bar data={chartCategorias} />
       </div>
     </div>
   );

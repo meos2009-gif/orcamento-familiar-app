@@ -55,7 +55,7 @@ export default function Categorias() {
   }
 
   return (
-    <div>
+    <div className="page">
       <h1>Categorias</h1>
 
       <div className="card">
@@ -75,27 +75,20 @@ export default function Categorias() {
       </div>
 
       <div className="card">
-        <h2>Lista de Categorias</h2>
+        <h2>Lista</h2>
 
         {categorias.length === 0 ? (
           <p className="empty">Nenhuma categoria encontrada.</p>
         ) : (
           <table className="table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-
             <tbody>
-              {categorias.map((cat) => (
-                <tr key={cat.id}>
-                  <td>{cat.name}</td>
+              {categorias.map((c) => (
+                <tr key={c.id}>
+                  <td>{c.name}</td>
                   <td>
                     <button
                       className="delete-btn"
-                      onClick={() => handleDelete(cat.id)}
+                      onClick={() => handleDelete(c.id)}
                     >
                       Apagar
                     </button>

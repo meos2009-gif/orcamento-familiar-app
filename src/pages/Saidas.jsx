@@ -19,7 +19,6 @@ export default function Saidas() {
 
   const [saidas, setSaidas] = useState([]);
 
-  // Carregar categorias
   async function loadCategorias() {
     const { data } = await supabase
       .from("categories")
@@ -30,7 +29,6 @@ export default function Saidas() {
     setCategorias(data || []);
   }
 
-  // Carregar saídas
   async function loadSaidas() {
     let query = supabase
       .from("transactions")
@@ -53,7 +51,6 @@ export default function Saidas() {
     }
   }, [user, mes, ano, categoriaFiltro]);
 
-  // Adicionar saída
   async function handleAdd(e) {
     e.preventDefault();
 
@@ -79,7 +76,6 @@ export default function Saidas() {
     loadSaidas();
   }
 
-  // Apagar saída
   async function handleDelete(id) {
     const { error } = await supabase
       .from("transactions")
@@ -96,10 +92,9 @@ export default function Saidas() {
   }
 
   return (
-    <div>
+    <div className="page">
       <h1>Saídas</h1>
 
-      {/* FILTROS */}
       <Filtros mes={mes} ano={ano} setMes={setMes} setAno={setAno} />
 
       <select
@@ -115,7 +110,6 @@ export default function Saidas() {
         ))}
       </select>
 
-      {/* FORMULÁRIO */}
       <div className="card">
         <h2>Nova Saída</h2>
 
@@ -159,7 +153,6 @@ export default function Saidas() {
         </form>
       </div>
 
-      {/* LISTA */}
       <div className="card">
         <h2>Lista</h2>
 
@@ -170,20 +163,14 @@ export default function Saidas() {
             <tbody>
               {saidas.map((item) => (
                 <tr key={item.id}>
-                  <td data-label="Descrição">{item.description}</td>
-
-                  <td data-label="Valor" className="valor saida">
-                    - {item.amount}€
-                  </td>
-
-                  <td data-label="Data">{item.date}</td>
-
-                  <td data-label="Categoria">
+                  <td>{item.description}</td>
+                  <td className="valor saida">- {item.amount}€</td>
+                  <td>{item.date}</td>
+                  <td>
                     {categorias.find((c) => c.id === item.category_id)?.name ||
                       "-"}
                   </td>
-
-                  <td data-label="Ações">
+                  <td>
                     <button
                       className="delete-btn"
                       onClick={() => handleDelete(item.id)}

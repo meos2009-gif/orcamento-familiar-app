@@ -96,7 +96,7 @@ export default function Entradas() {
   }
 
   return (
-    <div>
+    <div className="page">
       <h1>Entradas</h1>
 
       {/* FILTROS */}
@@ -173,30 +173,3 @@ export default function Entradas() {
                   <td data-label="Descrição">{item.description}</td>
 
                   <td data-label="Valor" className="valor entrada">
-                    + {item.amount}€
-                  </td>
-
-                  <td data-label="Data">{item.date}</td>
-
-                  <td data-label="Categoria">
-                    {categorias.find((c) => c.id === item.category_id)?.name ||
-                      "-"}
-                  </td>
-
-                  <td data-label="Ações">
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(item.id)}
-                    >
-                      Apagar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
-  );
-}

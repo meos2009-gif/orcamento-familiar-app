@@ -21,12 +21,6 @@ body {
   background: var(--bg-dark);
   color: var(--text-light);
   font-family: "Inter", Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Remove highlight no mobile */
-* {
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* ===========================
@@ -46,17 +40,14 @@ body {
   padding: 0 18px;
   z-index: 9999;
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
 
 .navbar-title {
   font-size: 20px;
   font-weight: 600;
   color: var(--text-light);
-  letter-spacing: 0.5px;
 }
 
-/* Botão Sair */
 .logout-btn {
   background: var(--danger);
   color: white;
@@ -64,12 +55,6 @@ body {
   padding: 8px 16px;
   border-radius: var(--radius);
   font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.logout-btn:hover {
-  background: #d93636;
 }
 
 /* ===========================
@@ -77,20 +62,21 @@ body {
    =========================== */
 
 .main-content {
-  padding-top: 80px; /* espaço para o navbar */
+  padding-top: 90px;
   padding-left: 14px;
   padding-right: 14px;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  .main-content {
-    padding-top: 90px;
-  }
+/* ===========================
+   PAGE WRAPPER
+   =========================== */
+
+.page {
+  padding-top: 20px;
 }
 
 /* ===========================
-   CARDS / CONTAINERS
+   CARDS
    =========================== */
 
 .card {
@@ -99,13 +85,6 @@ body {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   margin-bottom: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-.card-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 12px;
 }
 
 /* ===========================
@@ -120,23 +99,19 @@ select {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-light);
-  font-size: 15px;
   margin-bottom: 14px;
-  transition: var(--transition);
-}
-
-input:focus,
-select:focus {
-  border-color: var(--primary);
-  outline: none;
-  background: #151515;
 }
 
 /* ===========================
    BUTTONS
    =========================== */
 
-.btn {
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button[type="submit"] {
   width: 100%;
   padding: 12px;
   background: var(--primary);
@@ -144,12 +119,6 @@ select:focus {
   border: none;
   border-radius: var(--radius);
   font-size: 16px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn:hover {
-  background: #3a6fd6;
 }
 
 /* ===========================
@@ -159,21 +128,12 @@ select:focus {
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  overflow: hidden;
 }
 
-.table th,
-.table td {
+.table td,
+.table th {
   padding: 12px;
   border-bottom: 1px solid var(--border);
-}
-
-.table th {
-  background: #1f1f1f;
-  text-align: left;
-  font-weight: 600;
 }
 
 .table tr:hover {
@@ -181,13 +141,13 @@ select:focus {
 }
 
 /* ===========================
-   UTILS
+   DELETE BUTTON
    =========================== */
 
-.text-muted {
-  color: var(--text-muted);
+.delete-btn {
+  background: var(--danger);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
 }
-
-.mt-2 { margin-top: 12px; }
-.mt-3 { margin-top: 18px; }
-.mt-4 { margin-top: 24px; }

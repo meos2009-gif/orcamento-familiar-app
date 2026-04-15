@@ -19,7 +19,6 @@ export default function Entradas() {
 
   const [entradas, setEntradas] = useState([]);
 
-  // Carregar categorias
   async function loadCategorias() {
     const { data } = await supabase
       .from("categories")
@@ -30,7 +29,6 @@ export default function Entradas() {
     setCategorias(data || []);
   }
 
-  // Carregar entradas
   async function loadEntradas() {
     let query = supabase
       .from("transactions")
@@ -53,7 +51,6 @@ export default function Entradas() {
     }
   }, [user, mes, ano, categoriaFiltro]);
 
-  // Adicionar entrada
   async function handleAdd(e) {
     e.preventDefault();
 
@@ -79,7 +76,6 @@ export default function Entradas() {
     loadEntradas();
   }
 
-  // Apagar entrada
   async function handleDelete(id) {
     const { error } = await supabase
       .from("transactions")
@@ -99,7 +95,6 @@ export default function Entradas() {
     <div className="page">
       <h1>Entradas</h1>
 
-      {/* FILTROS */}
       <Filtros mes={mes} ano={ano} setMes={setMes} setAno={setAno} />
 
       <select
@@ -115,7 +110,6 @@ export default function Entradas() {
         ))}
       </select>
 
-      {/* FORMULÁRIO */}
       <div className="card">
         <h2>Nova Entrada</h2>
 
@@ -159,7 +153,6 @@ export default function Entradas() {
         </form>
       </div>
 
-      {/* LISTA */}
       <div className="card">
         <h2>Lista</h2>
 
@@ -173,3 +166,30 @@ export default function Entradas() {
                   <td data-label="Descrição">{item.description}</td>
 
                   <td data-label="Valor" className="valor entrada">
+                    + {item.amount}€
+                  </td>
+
+                  <td data-label="Data">{item.date}</td>
+
+                  <td data-label="Categoria">
+                    {categorias.find((c) => c.id === item.category_id)?.name ||
+                      "-"}
+                  </td>
+
+                  <td data-label="Ações">
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      Apagar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}

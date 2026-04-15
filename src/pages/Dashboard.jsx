@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
-  LineElement,
-  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend
-);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
   const hoje = new Date();
@@ -59,8 +49,8 @@ export default function Dashboard() {
   const totalSaidas = saidas.reduce((acc, s) => acc + Number(s.amount), 0);
   const saldoMes = totalEntradas - totalSaidas;
 
-  // Totais por categoria
-  const categoriasTotais = categorias.map((cat) => {
+  // Totais por categoria (mês)
+  const categoriasMensal = categorias.map((cat) => {
     const total = saidas
       .filter((s) => s.category_id === cat.id)
       .reduce((acc, s) => acc + Number(s.amount), 0);
@@ -68,42 +58,28 @@ export default function Dashboard() {
     return { nome: cat.name || "Sem Nome", total };
   });
 
-  // Gráfico por categoria
-  const chartCategorias = {
-    labels: categoriasTotais.map((c) => c.nome),
-    datasets: [
-      {
-        label: "Gastos por Categoria",
-        data: categoriasTotais.map((c) => c.total),
-        backgroundColor: "#4e79ff",
-      },
-    ],
-  };
+  // Totais acumulados por categoria (ano inteiro)
+  const categoriasAcumulado = categorias.map((cat) => {
+    const total = transactions
+      .filter(
+        (t) =>
+          t.type === "saida" &&
+          new Date(t.date).getFullYear() === ano &&
+          t.category_id === cat.id
+      )
+      .reduce((acc, t) => acc + Number(t.amount), 0);
 
-  // Gráfico de evolução mensal
-  const mesesLabels = [
-    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
-  ];
-
-  const gastosPorMes = Array(12).fill(0);
-
-  transactions.forEach((t) => {
-    const m = new Date(t.date).getMonth();
-    if (t.type === "saida") {
-      gastosPorMes[m] += Number(t.amount);
-    }
+    return { nome: cat.name || "Sem Nome", total };
   });
 
-  const chartEvolucao = {
-    labels: mesesLabels,
+  // Gráfico por categoria
+  const chartCategorias = {
+    labels: categoriasMensal.map((c) => c.nome),
     datasets: [
       {
-        label: "Gastos Mensais",
-        data: gastosPorMes,
-        borderColor: "#ff4e4e",
-        backgroundColor: "rgba(255, 78, 78, 0.3)",
-        tension: 0.3,
+        label: "Gastos por Categoria (Mês)",
+        data: categoriasMensal.map((c) => c.total),
+        backgroundColor: "#4e79ff",
       },
     ],
   };
@@ -149,15 +125,51 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* GRÁFICO DE EVOLUÇÃO */}
-      <div className="grafico">
-        <h3>Evolução Mensal</h3>
-        <Line data={chartEvolucao} />
+      {/* QUADRO MENSAL */}
+      <div className="tabela-categorias">
+        <h3>Despesas por Categoria (Mês)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Total (€)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categoriasMensal.map((c) => (
+              <tr key={c.nome}>
+                <td>{c.nome}</td>
+                <td>{c.total.toFixed(2)} €</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* QUADRO ACUMULADO */}
+      <div className="tabela-categorias">
+        <h3>Despesas por Categoria (Acumulado Ano)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Total (€)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categoriasAcumulado.map((c) => (
+              <tr key={c.nome}>
+                <td>{c.nome}</td>
+                <td>{c.total.toFixed(2)} €</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* GRÁFICO POR CATEGORIA */}
       <div className="grafico">
-        <h3>Gastos por Categoria</h3>
+        <h3>Gastos por Categoria (Gráfico)</h3>
         <Bar data={chartCategorias} />
       </div>
     </div>

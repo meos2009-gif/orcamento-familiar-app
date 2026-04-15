@@ -1,22 +1,21 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import "./Sidebar.css";
 
-export default function Sidebar() {
-  const { pathname } = useLocation();
-
-  const active = (path) =>
-    pathname === path ? "sidebar-link active" : "sidebar-link";
+export default function Sidebar({ open, onClose }) {
+  const { signOut } = useAuth();
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <h2>Orçamento Familiar</h2>
-      </div>
-
+    <aside className={`sidebar ${open ? "open" : ""}`}>
       <nav className="sidebar-nav">
-        <Link className={active("/")} to="/">📊 Dashboard</Link>
-        <Link className={active("/entradas")} to="/entradas">➕ Entradas</Link>
-        <Link className={active("/saidas")} to="/saidas">➖ Saídas</Link>
-        <Link className={active("/categorias")} to="/categorias">🏷️ Categorias</Link>
+        <Link to="/" onClick={onClose} className="sidebar-link">Dashboard</Link>
+        <Link to="/entradas" onClick={onClose} className="sidebar-link">Entradas</Link>
+        <Link to="/saidas" onClick={onClose} className="sidebar-link">Saídas</Link>
+        <Link to="/categorias" onClick={onClose} className="sidebar-link">Categorias</Link>
+
+        <button className="sidebar-logout" onClick={signOut}>
+          Sair
+        </button>
       </nav>
     </aside>
   );

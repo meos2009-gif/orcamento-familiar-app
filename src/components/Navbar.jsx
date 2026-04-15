@@ -5,7 +5,7 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="navbar-title"></div>
+      <div className="navbar-title">Orçamento Familiar</div>
 
       <button className="logout-btn" onClick={signOut}>
         Sair

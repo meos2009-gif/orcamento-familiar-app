@@ -1,44 +1,132 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { useAuth } from "../context/AuthContext";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const [entradas, setEntradas] = useState([]);
+  const [saidas, setSaidas] = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
-  const [entradas, setEntradas] = useState(0);
-  const [saidas, setSaidas] = useState(0);
-
-  async function loadResumo() {
-    const { data: entradasData } = await supabase
-      .from("transactions")
-      .select("amount")
-      .eq("type", "entrada")
-      .eq("user_id", user.id);
-
-    const { data: saidasData } = await supabase
-      .from("transactions")
-      .select("amount")
-      .eq("type", "saida")
-      .eq("user_id", user.id);
-
-    setEntradas(entradasData?.reduce((acc, i) => acc + i.amount, 0) || 0);
-    setSaidas(saidasData?.reduce((acc, i) => acc + i.amount, 0) || 0);
-  }
+  const hoje = new Date();
+  const mesAtual = hoje.getMonth() + 1;
+  const anoAtual = hoje.getFullYear();
 
   useEffect(() => {
-    if (user) loadResumo();
-  }, [user]);
+    carregarDados();
+  }, []);
+
+  async function carregarDados() {
+    const { data: ent } = await supabase
+      .from("entradas")
+      .select("*")
+      .eq("mes", mesAtual)
+      .eq("ano", anoAtual);
+
+    const { data: sai } = await supabase
+      .from("saidas")
+      .select("*")
+      .eq("mes", mesAtual)
+      .eq("ano", anoAtual);
+
+    const { data: cat } = await supabase.from("categorias").select("*");
+
+    setEntradas(ent || []);
+    setSaidas(sai || []);
+    setCategorias(cat || []);
+  }
+
+  // Cálculos
+  const totalEntradas = entradas.reduce((acc, e) => acc + e.valor, 0);
+  const totalSaidas = saidas.reduce((acc, s) => acc + s.valor, 0);
+  const saldoMes = totalEntradas - totalSaidas;
+
+  // Acumulado anual
+  const acumuladoAno = entradas
+    .filter((e) => e.ano === anoAtual)
+    .reduce((acc, e) => acc + e.valor, 0);
+
+  // Totais por categoria
+  const categoriasTotais = categorias.map((cat) => {
+    const total = saidas
+      .filter((s) => s.categoria_id === cat.id)
+      .reduce((acc, s) => acc + s.valor, 0);
+
+    return { nome: cat.nome, total };
+  });
+
+  // Gráfico
+  const chartData = {
+    labels: categoriasTotais.map((c) => c.nome),
+    datasets: [
+      {
+        label: "Gastos por Categoria",
+        data: categoriasTotais.map((c) => c.total),
+        backgroundColor: "#4e79ff",
+      },
+    ],
+  };
 
   return (
-    <div className="page">
-      <h1>Dashboard</h1>
+    <div className="dashboard">
+      <h2>Dashboard</h2>
 
-      <div className="card">
-        <h2>Resumo</h2>
+      {/* CARDS */}
+      <div className="cards">
+        <div className="card">
+          <h4>Entradas (mês)</h4>
+          <p>{totalEntradas.toFixed(2)} €</p>
+        </div>
 
-        <p>Entradas: <strong>{entradas}€</strong></p>
-        <p>Saídas: <strong>{saidas}€</strong></p>
-        <p>Saldo: <strong>{entradas - saidas}€</strong></p>
+        <div className="card">
+          <h4>Saídas (mês)</h4>
+          <p>{totalSaidas.toFixed(2)} €</p>
+        </div>
+
+        <div className="card">
+          <h4>Saldo</h4>
+          <p>{saldoMes.toFixed(2)} €</p>
+        </div>
+
+        <div className="card">
+          <h4>Acumulado Ano</h4>
+          <p>{acumuladoAno.toFixed(2)} €</p>
+        </div>
+      </div>
+
+      {/* GRÁFICO */}
+      <div className="grafico">
+        <Bar data={chartData} />
+      </div>
+
+      {/* TABELA POR CATEGORIA */}
+      <div className="tabela-categorias">
+        <h3>Gastos por Categoria</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Total (€)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categoriasTotais.map((c) => (
+              <tr key={c.nome}>
+                <td>{c.nome}</td>
+                <td>{c.total.toFixed(2)} €</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

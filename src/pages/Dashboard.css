@@ -1,0 +1,51 @@
+.dashboard {
+  color: #f2f2f2;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: #1c1c1c;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+}
+
+.card h4 {
+  margin: 0;
+  color: #aaa;
+}
+
+.card p {
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+}
+
+.grafico {
+  background: #1c1c1c;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+  margin-bottom: 2rem;
+}
+
+.tabela-categorias table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-categorias th,
+.tabela-categorias td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #333;
+}
+
+.tabela-categorias th {
+  text-align: left;
+  color: #aaa;
+}

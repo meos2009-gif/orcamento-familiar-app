@@ -9,14 +9,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // Carregar user atual ao iniciar
     supabase.auth.getUser().then(({ data }) => {
-      console.log("USER ATUAL:", data.user);
       setUser(data.user);
     });
 
     // Listener para login/logout
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        console.log("AUTH STATE CHANGE:", session?.user);
         setUser(session?.user ?? null);
       }
     );
@@ -24,8 +22,14 @@ export function AuthProvider({ children }) {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  // 🔥 AQUI ESTÁ O MÉTODO QUE FALTAVA
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user }}>
+    <AuthContext.Provider value={{ user, signOut }}>
       {children}
     </AuthContext.Provider>
   );

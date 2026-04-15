@@ -17,7 +17,8 @@ export default function Dashboard() {
   const [mes, setMes] = useState(hoje.getMonth() + 1);
   const [ano, setAno] = useState(hoje.getFullYear());
 
-  const [transactions, setTransactions] = useState([]);
+  const [transMes, setTransMes] = useState([]);
+  const [transAno, setTransAno] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
@@ -28,45 +29,52 @@ export default function Dashboard() {
     const mesStr = String(mes).padStart(2, "0");
     const proximoMes = String(mes + 1).padStart(2, "0");
 
-    const { data: trans } = await supabase
+    // 🔹 Transações do mês
+    const { data: transM } = await supabase
       .from("transactions")
       .select("*")
       .filter("date", "gte", `${ano}-${mesStr}-01`)
       .filter("date", "lt", `${ano}-${proximoMes}-01`);
 
+    // 🔹 Transações do ano inteiro
+    const { data: transA } = await supabase
+      .from("transactions")
+      .select("*")
+      .filter("date", "gte", `${ano}-01-01`)
+      .filter("date", "lt", `${ano + 1}-01-01`);
+
     const { data: cat } = await supabase.from("categories").select("*");
 
-    setTransactions(trans || []);
+    setTransMes(transM || []);
+    setTransAno(transA || []);
     setCategorias(cat || []);
   }
 
-  // Separar entradas e saídas
-  const saidas = transactions.filter((t) => t.type === "saida");
+  // 🔹 Saídas do mês
+  const saidasMes = transMes.filter((t) => t.type === "saida");
 
-  // Totais por categoria (mês)
+  // 🔹 Saídas do ano
+  const saidasAno = transAno.filter((t) => t.type === "saida");
+
+  // 🔹 Totais por categoria (mês)
   const categoriasMensal = categorias.map((cat) => {
-    const total = saidas
+    const total = saidasMes
       .filter((s) => s.category_id === cat.id)
       .reduce((acc, s) => acc + Number(s.amount), 0);
 
-    return { nome: cat.name || "Sem Nome", total };
+    return { nome: cat.name, total };
   });
 
-  // Totais acumulados por categoria (ano)
+  // 🔹 Totais por categoria (ano)
   const categoriasAcumulado = categorias.map((cat) => {
-    const total = transactions
-      .filter(
-        (t) =>
-          t.type === "saida" &&
-          new Date(t.date).getFullYear() === ano &&
-          t.category_id === cat.id
-      )
-      .reduce((acc, t) => acc + Number(t.amount), 0);
+    const total = saidasAno
+      .filter((s) => s.category_id === cat.id)
+      .reduce((acc, s) => acc + Number(s.amount), 0);
 
-    return { nome: cat.name || "Sem Nome", total };
+    return { nome: cat.name, total };
   });
 
-  // Gráfico por categoria
+  // 🔹 Gráfico por categoria (mês)
   const chartCategorias = {
     labels: categoriasMensal.map((c) => c.nome),
     datasets: [

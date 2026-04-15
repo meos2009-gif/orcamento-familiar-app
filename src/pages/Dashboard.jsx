@@ -65,7 +65,7 @@ export default function Dashboard() {
       .filter((s) => s.category_id === cat.id)
       .reduce((acc, s) => acc + Number(s.amount), 0);
 
-    return { nome: cat.nome, total };
+    return { nome: cat.name || "Sem Nome", total };
   });
 
   // Gráfico por categoria
@@ -80,7 +80,7 @@ export default function Dashboard() {
     ],
   };
 
-  // Gráfico de evolução mensal (linha)
+  // Gráfico de evolução mensal
   const mesesLabels = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
     "Jul", "Ago", "Set", "Out", "Nov", "Dez"
@@ -113,7 +113,7 @@ export default function Dashboard() {
       <h2>Dashboard</h2>
 
       {/* FILTROS */}
-      <div className="filtros">
+      <div className="filtros" style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
         <select value={mes} onChange={(e) => setMes(Number(e.target.value))}>
           {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
             <option key={m} value={m}>

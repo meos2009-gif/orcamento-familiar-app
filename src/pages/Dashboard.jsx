@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
   const hoje = new Date();
@@ -50,41 +39,27 @@ export default function Dashboard() {
     setCategorias(cat || []);
   }
 
-  // 🔹 Saídas do mês
-  const saidasMes = transMes.filter((t) => t.type === "saida");
+  // 🔹 Totais do mês
+  const entradasMes = transMes
+    .filter((t) => t.type === "entrada")
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
-  // 🔹 Saídas do ano
-  const saidasAno = transAno.filter((t) => t.type === "saida");
+  const saidasMes = transMes
+    .filter((t) => t.type === "saida")
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
-  // 🔹 Totais por categoria (mês)
-  const categoriasMensal = categorias.map((cat) => {
-    const total = saidasMes
-      .filter((s) => s.category_id === cat.id)
-      .reduce((acc, s) => acc + Number(s.amount), 0);
+  const saldoMes = entradasMes - saidasMes;
 
-    return { nome: cat.name, total };
-  });
+  // 🔹 Totais do ano
+  const entradasAno = transAno
+    .filter((t) => t.type === "entrada")
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
-  // 🔹 Totais por categoria (ano)
-  const categoriasAcumulado = categorias.map((cat) => {
-    const total = saidasAno
-      .filter((s) => s.category_id === cat.id)
-      .reduce((acc, s) => acc + Number(s.amount), 0);
+  const saidasAno = transAno
+    .filter((t) => t.type === "saida")
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
-    return { nome: cat.name, total };
-  });
-
-  // 🔹 Gráfico por categoria (mês)
-  const chartCategorias = {
-    labels: categoriasMensal.map((c) => c.nome),
-    datasets: [
-      {
-        label: "Gastos por Categoria (Mês)",
-        data: categoriasMensal.map((c) => c.total),
-        backgroundColor: "#4e79ff",
-      },
-    ],
-  };
+  const saldoAno = entradasAno - saidasAno;
 
   return (
     <div className="dashboard">
@@ -111,42 +86,95 @@ export default function Dashboard() {
 
       {/* QUADRO ESTILO EXCEL */}
       <div className="tabela-categorias">
-        <h3>Despesas por Categoria (Estilo Excel)</h3>
+        <h3>Totais de Receitas e Despesas</h3>
 
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ background: "#222" }}>
-              <th style={{ padding: "10px", border: "1px solid #444" }}>Categoria</th>
+              <th style={{ padding: "10px", border: "1px solid #444" }}>Descrição</th>
               <th style={{ padding: "10px", border: "1px solid #444" }}>Total Mês (€)</th>
               <th style={{ padding: "10px", border: "1px solid #444" }}>Acumulado Ano (€)</th>
             </tr>
           </thead>
 
           <tbody>
-            {categorias.map((cat) => {
-              const mensal = categoriasMensal.find((c) => c.nome === cat.name)?.total || 0;
-              const acumulado = categoriasAcumulado.find((c) => c.nome === cat.name)?.total || 0;
+            <tbody>
+  <tr>
+    <td style={{ padding: "10px", border: "1px solid #444" }}>Receitas</td>
 
-              return (
-                <tr key={cat.id}>
-                  <td style={{ padding: "10px", border: "1px solid #444" }}>{cat.name}</td>
-                  <td style={{ padding: "10px", border: "1px solid #444" }}>
-                    {mensal.toFixed(2)} €
-                  </td>
-                  <td style={{ padding: "10px", border: "1px solid #444" }}>
-                    {acumulado.toFixed(2)} €
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
+    <td
+      style={{
+        padding: "10px",
+        border: "1px solid #444",
+        color: entradasMes > 0 ? "lightgreen" : entradasMes < 0 ? "red" : "white",
+      }}
+    >
+      {entradasMes.toFixed(2)} €
+    </td>
+
+    <td
+      style={{
+        padding: "10px",
+        border: "1px solid #444",
+        color: entradasAno > 0 ? "lightgreen" : entradasAno < 0 ? "red" : "white",
+      }}
+    >
+      {entradasAno.toFixed(2)} €
+    </td>
+  </tr>
+
+  <tr>
+    <td style={{ padding: "10px", border: "1px solid #444" }}>Despesas</td>
+
+    <td
+      style={{
+        padding: "10px",
+        border: "1px solid #444",
+        color: saidasMes > 0 ? "red" : saidasMes < 0 ? "lightgreen" : "white",
+      }}
+    >
+      {saidasMes.toFixed(2)} €
+    </td>
+
+    <td
+      style={{
+        padding: "10px",
+        border: "1px solid #444",
+        color: saidasAno > 0 ? "red" : saidasAno < 0 ? "lightgreen" : "white",
+      }}
+    >
+      {saidasAno.toFixed(2)} €
+    </td>
+  </tr>
+
+  <tr style={{ background: "#111" }}>
+    <td style={{ padding: "10px", border: "1px solid #444" }}><b>Saldo</b></td>
+
+    <td
+      style={{
+        padding: "10px",
+        border: "1px solid #444",
+        color: saldoMes > 0 ? "lightgreen" : saldoMes < 0 ? "red" : "white",
+        fontWeight: "bold",
+      }}
+    >
+      {saldoMes.toFixed(2)} €
+    </td>
+
+    <td
+      style={{
+        padding: "10px",
+        border: "1px solid #444",
+        color: saldoAno > 0 ? "lightgreen" : saldoAno < 0 ? "red" : "white",
+        fontWeight: "bold",
+      }}
+    >
+      {saldoAno.toFixed(2)} €
+    </td>
+  </tr>
+</tbody>
+
         </table>
-      </div>
-
-      {/* GRÁFICO POR CATEGORIA */}
-      <div className="grafico">
-        <h3>Gastos por Categoria (Gráfico)</h3>
-        <Bar data={chartCategorias} />
       </div>
     </div>
   );

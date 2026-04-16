@@ -16,21 +16,25 @@ export default function Dashboard() {
 
   async function carregarDados() {
     const mesStr = String(mes).padStart(2, "0");
-    const proximoMes = String(mes + 1).padStart(2, "0");
+
+    // 🔥 CORREÇÃO CRÍTICA: cálculo do próximo mês e ano
+    const proximoMes = mes === 12 ? 1 : mes + 1;
+    const anoProximo = mes === 12 ? ano + 1 : ano;
+    const proximoMesStr = String(proximoMes).padStart(2, "0");
 
     // 🔹 Transações do mês
     const { data: transM } = await supabase
       .from("transactions")
       .select("*")
-      .filter("date", "gte", `${ano}-${mesStr}-01`)
-      .filter("date", "lt", `${ano}-${proximoMes}-01`);
+      .gte("date", `${ano}-${mesStr}-01`)
+      .lt("date", `${anoProximo}-${proximoMesStr}-01`);
 
     // 🔹 Transações do ano inteiro
     const { data: transA } = await supabase
       .from("transactions")
       .select("*")
-      .filter("date", "gte", `${ano}-01-01`)
-      .filter("date", "lt", `${ano + 1}-01-01`);
+      .gte("date", `${ano}-01-01`)
+      .lt("date", `${ano + 1}-01-01`);
 
     const { data: cat } = await supabase.from("categories").select("*");
 
@@ -121,23 +125,11 @@ export default function Dashboard() {
             <tr>
               <td style={{ padding: "10px", border: "1px solid #444" }}>Receitas</td>
 
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #444",
-                  color: entradasMes > 0 ? "lightgreen" : "white",
-                }}
-              >
+              <td style={{ padding: "10px", border: "1px solid #444", color: entradasMes > 0 ? "lightgreen" : "white" }}>
                 {entradasMes.toFixed(2)} €
               </td>
 
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #444",
-                  color: entradasAno > 0 ? "lightgreen" : "white",
-                }}
-              >
+              <td style={{ padding: "10px", border: "1px solid #444", color: entradasAno > 0 ? "lightgreen" : "white" }}>
                 {entradasAno.toFixed(2)} €
               </td>
 
@@ -148,23 +140,11 @@ export default function Dashboard() {
             <tr>
               <td style={{ padding: "10px", border: "1px solid #444" }}>Despesas</td>
 
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #444",
-                  color: saidasMes > 0 ? "red" : "white",
-                }}
-              >
+              <td style={{ padding: "10px", border: "1px solid #444", color: saidasMes > 0 ? "red" : "white" }}>
                 {saidasMes.toFixed(2)} €
               </td>
 
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #444",
-                  color: saidasAno > 0 ? "red" : "white",
-                }}
-              >
+              <td style={{ padding: "10px", border: "1px solid #444", color: saidasAno > 0 ? "red" : "white" }}>
                 {saidasAno.toFixed(2)} €
               </td>
 
@@ -178,25 +158,11 @@ export default function Dashboard() {
               <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
               <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
 
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #444",
-                  color: saldoMes > 0 ? "lightgreen" : "red",
-                  fontWeight: "bold",
-                }}
-              >
+              <td style={{ padding: "10px", border: "1px solid #444", color: saldoMes > 0 ? "lightgreen" : "red", fontWeight: "bold" }}>
                 {saldoMes.toFixed(2)} €
               </td>
 
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #444",
-                  color: saldoAno > 0 ? "lightgreen" : "red",
-                  fontWeight: "bold",
-                }}
-              >
+              <td style={{ padding: "10px", border: "1px solid #444", color: saldoAno > 0 ? "lightgreen" : "red", fontWeight: "bold" }}>
                 {saldoAno.toFixed(2)} €
               </td>
             </tr>
@@ -222,23 +188,11 @@ export default function Dashboard() {
               <tr key={c.nome}>
                 <td style={{ padding: "10px", border: "1px solid #444" }}>{c.nome}</td>
 
-                <td
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #444",
-                    color: c.total > 0 ? "red" : "white",
-                  }}
-                >
+                <td style={{ padding: "10px", border: "1px solid #444", color: c.total > 0 ? "red" : "white" }}>
                   {c.total.toFixed(2)} €
                 </td>
 
-                <td
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #444",
-                    color: c.percent > 0 ? "orange" : "white",
-                  }}
-                >
+                <td style={{ padding: "10px", border: "1px solid #444", color: c.percent > 0 ? "orange" : "white" }}>
                   {c.percent.toFixed(1)}%
                 </td>
               </tr>

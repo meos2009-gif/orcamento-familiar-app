@@ -1,14 +1,9 @@
-import { useState } from "react";
 import "./Navbar.css";
 
-export default function Navbar({ onToggleSidebar }) {
+export default function Navbar() {
   return (
     <header className="navbar">
-      <button className="hamburger" onClick={onToggleSidebar}>
-        ☰
-      </button>
-
-      <h1 className="navbar-title">Orçamento Familiar</h1>
+      <h1>Gestão Financeira</h1>
     </header>
   );
 }

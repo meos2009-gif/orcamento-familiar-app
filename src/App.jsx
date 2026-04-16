@@ -1,70 +1,34 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppLayout from "./layout/AppLayout";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
 
 import Dashboard from "./pages/Dashboard";
-import Entradas from "./pages/Entradas";
-import Saidas from "./pages/Saidas";
+import Receitas from "./pages/Receitas";
+import Despesas from "./pages/Despesas";
 import Categorias from "./pages/Categorias";
 
-import Login from "./pages/Login";
-import { AuthProvider } from "./context/AuthContext";
-import PrivateRoute from "./components/PrivateRoute";
+import "./App.css";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
+    <Router>
+      <div className="app-layout">
 
-          <Route path="/login" element={<Login />} />
+        <Sidebar />
+        <Navbar />
 
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <AppLayout>
-                  <Dashboard />
-                </AppLayout>
-              </PrivateRoute>
-            }
-          />
+        <main className="conteudo">
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/receitas" element={<Receitas />} />
+            <Route path="/despesas" element={<Despesas />} />
+            <Route path="/categorias" element={<Categorias />} />
+            <Route path="*" element={<Dashboard />} />
+          </Routes>
+        </main>
 
-          <Route
-            path="/entradas"
-            element={
-              <PrivateRoute>
-                <AppLayout>
-                  <Entradas />
-                </AppLayout>
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/saidas"
-            element={
-              <PrivateRoute>
-                <AppLayout>
-                  <Saidas />
-                </AppLayout>
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/categorias"
-            element={
-              <PrivateRoute>
-                <AppLayout>
-                  <Categorias />
-                </AppLayout>
-              </PrivateRoute>
-            }
-          />
-
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </div>
+    </Router>
   );
 }

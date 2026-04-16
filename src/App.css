@@ -1,256 +1,114 @@
-/* ===========================
-   GLOBAL THEME
-   =========================== */
-
-:root {
-  --bg-dark: #0f0f0f;
-  --bg-card: #1a1a1a;
-  --bg-hover: #222;
-  --text-light: #f2f2f2;
-  --text-muted: #b5b5b5;
-  --primary: #4f8cff;
-  --danger: #ff4d4d;
-  --border: #2a2a2a;
-  --radius: 10px;
-  --transition: 0.2s ease;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg-dark);
-  color: var(--text-light);
-  font-family: "Inter", Arial, Helvetica, sans-serif;
-}
-
-/* ===========================
-   NAVBAR
-   =========================== */
-
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 65px;
-  background: #141414;
+/* ===== LAYOUT PRINCIPAL ===== */
+.app-layout {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  z-index: 9999;
-  border-bottom: 1px solid var(--border);
+  height: 100vh;
+  background: #0d0d0d;
+  color: #e0e0e0;
+  font-family: "Inter", sans-serif;
 }
 
-.navbar-title {
-  font-size: 20px;
+/* ===== CONTEÚDO ===== */
+.conteudo {
+  flex: 1;
+  margin-left: 240px;
+  padding: 100px 40px 40px 40px;
+  overflow-y: auto;
+}
+
+/* ===== TÍTULOS ===== */
+h2, h3 {
+  color: #fff;
+  margin-bottom: 20px;
   font-weight: 600;
-  color: var(--text-light);
 }
 
-.logout-btn {
-  background: var(--danger);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: var(--radius);
-  font-size: 14px;
-}
-
-/* ===========================
-   MAIN CONTENT
-   =========================== */
-
-.main-content {
-  padding-top: 90px;
-  padding-left: 14px;
-  padding-right: 14px;
-}
-
-/* ===========================
-   PAGE WRAPPER
-   =========================== */
-
-.page {
-  padding-top: 20px;
-}
-
-/* ===========================
-   CARDS
-   =========================== */
-
-.card {
-  background: var(--bg-card);
-  padding: 18px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  margin-bottom: 18px;
-}
-
-/* ===========================
-   INPUTS / SELECTS
-   =========================== */
-
-input,
-select {
-  width: 100%;
-  padding: 12px;
-  background: #111;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-light);
-  margin-bottom: 14px;
-}
-
-/* ===========================
-   BUTTONS
-   =========================== */
-
-button {
-  cursor: pointer;
-  font-family: inherit;
-}
-
-button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: var(--radius);
-  font-size: 16px;
-}
-
-/* ===========================
-   TABLES
-   =========================== */
-
-.table {
+/* ===== TABELAS PREMIUM ===== */
+table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.table td,
-.table th {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.table tr:hover {
-  background: var(--bg-hover);
-}
-
-/* ===========================
-   DELETE BUTTON
-   =========================== */
-
-.delete-btn {
-  background: var(--danger);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-}
-/* ===========================
-   NAVBAR RESPONSIVO
-   =========================== */
-
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 65px;
+  margin-bottom: 35px;
   background: #141414;
-  padding: 0 18px;
-  border-bottom: 1px solid #2a2a2a;
-  z-index: 9999;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.25);
 }
 
-.navbar-links.desktop {
-  display: flex;
-  gap: 20px;
+th {
+  background: #1c1c1c;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
 }
 
-.navbar-links.desktop a {
-  color: #f2f2f2;
-  text-decoration: none;
-  font-size: 15px;
+td, th {
+  padding: 14px 16px;
+  border-bottom: 1px solid #222;
 }
 
-.navbar-links.desktop a:hover {
-  color: #4f8cff;
+tr:last-child td {
+  border-bottom: none;
 }
 
-/* HAMBURGER */
-.hamburger {
-  width: 30px;
-  height: 22px;
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.bar {
-  width: 100%;
-  height: 3px;
-  background: #f2f2f2;
-  transition: 0.3s;
-}
-
-.bar.open:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.bar.open:nth-child(2) {
-  opacity: 0;
-}
-
-.bar.open:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-}
-
-/* MENU MOBILE */
-.navbar-mobile {
-  position: absolute;
-  top: 65px;
-  left: 0;
-  width: 100%;
-  background: #1a1a1a;
-  padding: 20px;
+/* ===== FORMULÁRIOS PREMIUM ===== */
+form {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.navbar-mobile a {
-  color: #f2f2f2;
-  text-decoration: none;
-  font-size: 18px;
-}
-
-.logout-btn.mobile {
-  width: 100%;
-  padding: 12px;
-  background: #ff4d4d;
-  border: none;
+  max-width: 420px;
+  background: #141414;
+  padding: 25px;
   border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.25);
+}
+
+input, select {
+  padding: 12px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+input:focus, select:focus {
+  border-color: #0078ff;
+  outline: none;
+}
+
+button {
+  padding: 14px;
+  background: #0078ff;
+  border: none;
   color: white;
   font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
 }
 
-/* RESPONSIVO */
+button:hover {
+  background: #0a84ff;
+}
+
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  .desktop {
-    display: none;
+  .sidebar {
+    left: -240px;
+    transition: 0.3s;
   }
 
-  .hamburger {
-    display: flex;
+  .sidebar.open {
+    left: 0;
+  }
+
+  .navbar {
+    left: 0;
+    width: 100%;
+  }
+
+  .conteudo {
+    margin-left: 0;
+    padding: 100px 20px 20px 20px;
   }
 }

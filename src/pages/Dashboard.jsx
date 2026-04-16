@@ -96,8 +96,7 @@ export default function Dashboard() {
               <th style={{ padding: "10px", border: "1px solid #444" }}>Acumulado Ano (€)</th>
             </tr>
           </thead>
-
-          <tbody>
+         
             <tbody>
   <tr>
     <td style={{ padding: "10px", border: "1px solid #444" }}>Receitas</td>

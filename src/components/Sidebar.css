@@ -1,39 +1,63 @@
+/* Sidebar base */
 .sidebar {
-  width: 240px;
+  width: 250px;
   background: #111;
-  border-right: 1px solid #1f1f1f;
-  padding: 30px 22px;
+  color: white;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  z-index: 200;
 }
 
+/* Desktop: sidebar sempre visível */
+@media (min-width: 769px) {
+  .sidebar {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile: sidebar escondida por defeito */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Overlay no mobile */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 150;
+}
+
+.sidebar-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Links */
 .sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .sidebar li {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .sidebar a {
-  color: #cfcfcf;
+  color: white;
   text-decoration: none;
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  transition: 0.2s ease;
-  padding: 8px 0;
-  display: block;
-}
-
-.sidebar a:hover {
-  color: #fff;
-  transform: translateX(4px);
+  font-size: 18px;
 }

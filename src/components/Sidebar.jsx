@@ -1,17 +1,25 @@
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose }) {
   return (
-    <aside className="sidebar">
-      <nav>
-        <ul>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/receitas">Receitas</Link></li>
-          <li><Link to="/despesas">Despesas</Link></li>
-          <li><Link to="/categorias">Categorias</Link></li>
-        </ul>
-      </nav>
-    </aside>
+    <>
+      {/* Overlay no telemóvel */}
+      <div
+        className={`sidebar-overlay ${open ? "show" : ""}`}
+        onClick={onClose}
+      />
+
+      <aside className={`sidebar ${open ? "open" : ""}`}>
+        <nav>
+          <ul>
+            <li><Link to="/dashboard" onClick={onClose}>Dashboard</Link></li>
+            <li><Link to="/receitas" onClick={onClose}>Receitas</Link></li>
+            <li><Link to="/despesas" onClick={onClose}>Despesas</Link></li>
+            <li><Link to="/categorias" onClick={onClose}>Categorias</Link></li>
+          </ul>
+        </nav>
+      </aside>
+    </>
   );
 }

@@ -1,21 +1,26 @@
 .navbar {
-  width: calc(100% - 240px);
-  height: 65px;
-  background: #0f0f0f;
-  border-bottom: 1px solid #1f1f1f;
   display: flex;
   align-items: center;
-  padding: 0 30px;
-  position: fixed;
-  left: 240px;
-  top: 0;
-  z-index: 20;
-  box-shadow: 0 0 25px rgba(0,0,0,0.35);
+  gap: 20px;
+  background: #111;
+  color: white;
+  padding: 15px 20px;
+  border-bottom: 1px solid #222;
 }
 
-.navbar h1 {
-  font-size: 20px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.4px;
+/* Botão hambúrguer */
+.menu-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  display: none; /* escondido no desktop */
+}
+
+/* Mostrar no telemóvel */
+@media (max-width: 768px) {
+  .menu-button {
+    display: block;
+  }
 }

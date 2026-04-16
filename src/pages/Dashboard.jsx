@@ -112,6 +112,8 @@ export default function Dashboard() {
               <th style={{ padding: "10px", border: "1px solid #444" }}>Descrição</th>
               <th style={{ padding: "10px", border: "1px solid #444" }}>Total Mês (€)</th>
               <th style={{ padding: "10px", border: "1px solid #444" }}>Acumulado Ano (€)</th>
+              <th style={{ padding: "10px", border: "1px solid #444" }}>Saldo Mês (€)</th>
+              <th style={{ padding: "10px", border: "1px solid #444" }}>Saldo Ano (€)</th>
             </tr>
           </thead>
 
@@ -123,7 +125,7 @@ export default function Dashboard() {
                 style={{
                   padding: "10px",
                   border: "1px solid #444",
-                  color: entradasMes > 0 ? "lightgreen" : entradasMes < 0 ? "red" : "white",
+                  color: entradasMes > 0 ? "lightgreen" : "white",
                 }}
               >
                 {entradasMes.toFixed(2)} €
@@ -133,11 +135,14 @@ export default function Dashboard() {
                 style={{
                   padding: "10px",
                   border: "1px solid #444",
-                  color: entradasAno > 0 ? "lightgreen" : entradasAno < 0 ? "red" : "white",
+                  color: entradasAno > 0 ? "lightgreen" : "white",
                 }}
               >
                 {entradasAno.toFixed(2)} €
               </td>
+
+              <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
+              <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
             </tr>
 
             <tr>
@@ -147,7 +152,7 @@ export default function Dashboard() {
                 style={{
                   padding: "10px",
                   border: "1px solid #444",
-                  color: saidasMes > 0 ? "red" : saidasMes < 0 ? "lightgreen" : "white",
+                  color: saidasMes > 0 ? "red" : "white",
                 }}
               >
                 {saidasMes.toFixed(2)} €
@@ -157,21 +162,27 @@ export default function Dashboard() {
                 style={{
                   padding: "10px",
                   border: "1px solid #444",
-                  color: saidasAno > 0 ? "red" : saidasAno < 0 ? "lightgreen" : "white",
+                  color: saidasAno > 0 ? "red" : "white",
                 }}
               >
                 {saidasAno.toFixed(2)} €
               </td>
+
+              <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
+              <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
             </tr>
 
             <tr style={{ background: "#111" }}>
               <td style={{ padding: "10px", border: "1px solid #444" }}><b>Saldo</b></td>
 
+              <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
+              <td style={{ padding: "10px", border: "1px solid #444" }}>—</td>
+
               <td
                 style={{
                   padding: "10px",
                   border: "1px solid #444",
-                  color: saldoMes > 0 ? "lightgreen" : saldoMes < 0 ? "red" : "white",
+                  color: saldoMes > 0 ? "lightgreen" : "red",
                   fontWeight: "bold",
                 }}
               >
@@ -182,7 +193,7 @@ export default function Dashboard() {
                 style={{
                   padding: "10px",
                   border: "1px solid #444",
-                  color: saldoAno > 0 ? "lightgreen" : saldoAno < 0 ? "red" : "white",
+                  color: saldoAno > 0 ? "lightgreen" : "red",
                   fontWeight: "bold",
                 }}
               >

@@ -15,7 +15,7 @@
   color: white;
   font-size: 28px;
   cursor: pointer;
-  display: none; /* escondido no desktop */
+  display: none;
 }
 
 /* Mostrar no telemóvel */

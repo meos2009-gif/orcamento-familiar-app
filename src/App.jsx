@@ -1,34 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import "./AppLayout.css";
 
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
+export default function AppLayout({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-import Dashboard from "./pages/Dashboard";
-import Receitas from "./pages/Receitas";
-import Despesas from "./pages/Despesas";
-import Categorias from "./pages/Categorias";
-
-import "./App.css";
-
-export default function App() {
   return (
-    <Router>
-      <div className="app-layout">
+    <div className="layout">
+      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-        <Sidebar />
-        <Navbar />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-        <main className="conteudo">
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/receitas" element={<Receitas />} />
-            <Route path="/despesas" element={<Despesas />} />
-            <Route path="/categorias" element={<Categorias />} />
-            <Route path="*" element={<Dashboard />} />
-          </Routes>
-        </main>
-
-      </div>
-    </Router>
+      <main className="main-content">
+        {children}
+      </main>
+    </div>
   );
 }

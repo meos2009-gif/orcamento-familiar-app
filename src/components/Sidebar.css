@@ -12,14 +12,14 @@
   z-index: 200;
 }
 
-/* Desktop: sidebar sempre visível */
+/* Desktop */
 @media (min-width: 769px) {
   .sidebar {
     transform: translateX(0);
   }
 }
 
-/* Mobile: sidebar escondida por defeito */
+/* Mobile */
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
@@ -30,7 +30,7 @@
   }
 }
 
-/* Overlay no mobile */
+/* Overlay */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -44,20 +44,4 @@
 .sidebar-overlay.show {
   opacity: 1;
   pointer-events: auto;
-}
-
-/* Links */
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin-bottom: 20px;
-}
-
-.sidebar a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
 }

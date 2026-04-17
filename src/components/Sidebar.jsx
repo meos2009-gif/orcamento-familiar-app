@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
-
 export default function Sidebar({ open, onClose }) {
   return (
     <>
-      {/* Overlay no telemóvel */}
       <div
         className={`sidebar-overlay ${open ? "show" : ""}`}
         onClick={onClose}
